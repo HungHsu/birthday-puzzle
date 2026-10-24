@@ -108,8 +108,8 @@ button.primary,.next button{background:#f5d8df;font-weight:800}
     <div class="celebrateCard">
       <div class="confetti"><i></i><i></i><i></i><i></i><i></i><i></i></div>
       <img src="https://media4.giphy.com/media/daOM5veK5Mwasb5TLY/giphy.gif" alt="史努比開心跳舞慶祝">
-      <h2>🎉 第一關通關！</h2>
-      <p>恭喜念寶完成第 1 關！史努比來幫妳慶祝啦 ♡</p>
+      <h2 id="eggTitle">🎉 第 1 關通關！</h2>
+      <p id="eggText">恭喜念寶完成第 1 關！史努比來幫妳慶祝啦 ♡</p>
       <button id="closeSnoopy" type="button">耶！繼續 ♡</button>
     </div>
   </div>
@@ -170,7 +170,7 @@ const board=document.querySelector("#board"),tray=document.querySelector("#tray"
 const levels=document.querySelector("#levels"),lv=document.querySelector("#lv"),tm=document.querySelector("#tm"),mv=document.querySelector("#mv"),msg=document.querySelector("#msg");
 const solve=document.querySelector("#solve"),solveBox=document.querySelector("#solveBox"),cancelSolve=document.querySelector("#cancelSolve"),confirmSolve=document.querySelector("#confirmSolve");
 const snoopyEgg=document.querySelector("#snoopyEgg"),closeSnoopy=document.querySelector("#closeSnoopy");
-const rewardCardOverlay=document.querySelector("#rewardCardOverlay"),rewardContinue=document.querySelector("#rewardContinue");
+const rewardCardOverlay=document.querySelector("#rewardCardOverlay"),rewardContinue=document.querySelector("#rewardContinue"),rewardPaw=document.querySelector(".rewardPaw"),eggTitle=document.querySelector("#eggTitle"),eggText=document.querySelector("#eggText");
 const nextBox=document.querySelector("#nextBox"),finalBox=document.querySelector("#finalBox"),doneText=document.querySelector("#doneText");
 let stage=0, placed=Array(N).fill(null), selectedSource=null, moves=0, start=0, timer=null, playing=false;
 let completed=Array(6).fill(false);
@@ -271,12 +271,9 @@ function check(){
  playing=false;clearInterval(timer);completed[stage]=true;buildBoard();drawLevels();
  msg.textContent=`🎉 第 ${stage+1} 關完成！完整圖片又多了 1/6`;
  tray.innerHTML="";
- if(stage===5){finalBox.classList.add("show");}
- else{
-   doneText.textContent=`已完成整張圖的 ${stage+1}/6，下一關會再出現 30 片新的拼圖。`;
-   if(stage===0){snoopyEgg.classList.add("show");document.body.style.overflow="hidden";}
-   else{nextBox.classList.add("show");}
- }
+ prepareRewardForStage();
+ snoopyEgg.classList.add("show");
+ document.body.style.overflow="hidden";
 }
 function begin(){
  clearInterval(timer);placed=Array(N).fill(null);selectedSource=null;moves=0;mv.textContent="0";tm.textContent="00:00";lv.textContent=stage+1;
@@ -291,6 +288,16 @@ board.addEventListener("pointerup",e=>{
  const local=+c.dataset.local;
  if(selectedSource!==null)placeAt(local); else selectBoardPiece(local);
 },{passive:true});
+
+const STAMP_LEFT=[10.4,23.7,37.0,50.3,63.6,76.9];
+function prepareRewardForStage(){
+  const n=stage+1;
+  eggTitle.textContent=`🎉 第 ${n} 關通關！`;
+  eggText.textContent=`恭喜念寶完成第 ${n} 關！史努比來幫妳慶祝啦 ♡`;
+  rewardPaw.style.setProperty("left",STAMP_LEFT[stage]+"%","important");
+  rewardContinue.textContent=`獲得第 ${n} 點 ♡　繼續`;
+}
+
 closeSnoopy.onclick=()=>{
  snoopyEgg.classList.remove("show");
  rewardCardOverlay.classList.add("show");
@@ -303,9 +310,15 @@ closeSnoopy.onclick=()=>{
 rewardContinue.onclick=()=>{
  rewardCardOverlay.classList.remove("show","stamping","stamped");
  document.body.style.overflow="";
- doneText.textContent="🎉 第 1 關通關！已獲得 1 點，準備挑戰第 2 關吧 ♡";
- nextBox.classList.add("show");
- setTimeout(()=>nextBox.scrollIntoView({behavior:"smooth",block:"center"}),50);
+ const n=stage+1;
+ if(stage===5){
+   finalBox.classList.add("show");
+   setTimeout(()=>finalBox.scrollIntoView({behavior:"smooth",block:"center"}),50);
+ }else{
+   doneText.textContent=`🎉 第 ${n} 關通關！已獲得第 ${n} 點，準備挑戰第 ${n+1} 關吧 ♡`;
+   nextBox.classList.add("show");
+   setTimeout(()=>nextBox.scrollIntoView({behavior:"smooth",block:"center"}),50);
+ }
 };
 solve.onclick=()=>{
  if(!playing)return;
