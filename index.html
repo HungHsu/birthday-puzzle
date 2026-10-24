@@ -74,6 +74,23 @@ button.primary,.next button{background:#f5d8df;font-weight:800}
   100%{opacity:.94;transform:translate(-50%,-50%) scale(1) rotate(0deg)}
 }
 
+
+/* 第一格：保留數字 1 可見，腳印蓋在圓圈下半部 */
+.rewardCardStage .rewardPaw{
+  left:10.4% !important;
+  top:84.3% !important;
+  width:5.2% !important;
+  transform:translate(-50%,-50%) scale(1) rotate(0deg) !important;
+}
+.rewardCardOverlay.stamping .rewardPaw{
+  animation:rewardStampKeepNumber .72s cubic-bezier(.18,.9,.22,1.22) forwards !important;
+}
+@keyframes rewardStampKeepNumber{
+  0%{opacity:0;transform:translate(-50%,-50%) scale(2.1)}
+  65%{opacity:1;transform:translate(-50%,-50%) scale(.82)}
+  100%{opacity:.94;transform:translate(-50%,-50%) scale(1)}
+}
+
 </style>
 </head>
 <body>
